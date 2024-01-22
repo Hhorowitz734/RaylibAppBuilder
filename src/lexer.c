@@ -6,23 +6,31 @@ FILE* openFile(const char* filename) {
     return file;
 }
 
-void parseFile(FILE* file) {
+Token* parseFile(FILE* file) {
     if (file == NULL) { 
         printf("File is null.\n"); 
-        return;
+        return NULL;
     }
 
     char buffer[1024];
+    Token* curr = NULL;
+    Token* temp = NULL;
+    Token* head = NULL;
 
     while (fgets(buffer, sizeof(buffer), file) != NULL) {
         int position = 0;  
 
         while (buffer[position] != '\0') {
-            processTag(buffer, &position); 
+            curr = processTag(buffer, &position);
+            if (temp != NULL) { temp->next = curr; }
+            else { head = curr; }
+            temp = curr; 
         }
     }
 
     fclose(file);
+
+    return head;
 }
 
 
@@ -56,8 +64,6 @@ Token* processTag(char* input, int* position) {
     }
     token->lexeme = tagLexeme;
     token->type = typeSwitch(tagLexeme);
-
-    printf("%s\n", tagLexeme);
 
     (*position)++;  
     return token;

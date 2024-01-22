@@ -3,7 +3,12 @@
 
 int main() {
     FILE* file = openFile("../test.txt");
-    parseFile(file);
+    Token* head = parseFile(file);
+
+    while (head != NULL){
+        printf("%s\n", head->lexeme);
+        head = head->next;
+    }
 
     return 0;
 }

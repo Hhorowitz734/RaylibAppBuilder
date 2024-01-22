@@ -21,10 +21,11 @@ typedef enum TType {
 typedef struct Token {
     TType type;
     char* lexeme;
+    struct Token* next;
 } Token;
 
 FILE* openFile(const char* filename);
-void parseFile(FILE* file);
+Token* parseFile(FILE* file);
 
 Token* processTag(char* input, int* position);
 TType typeSwitch(char* lexeme);
