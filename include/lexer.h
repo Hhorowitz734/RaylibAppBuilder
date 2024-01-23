@@ -11,8 +11,9 @@ typedef enum TType {
     BODY_OPEN, //<body>
     HEAD_OPEN, //<head>
     HEAD_CLOSE, //</head>
+    SET, //SET
 
-
+    END, //End Token
     INVALID //Invalid Type
 
 
@@ -29,5 +30,8 @@ Token* parseFile(FILE* file);
 
 Token* processTag(char* input, int* position);
 TType typeSwitch(char* lexeme);
+
+Token* processDirective(char* input, int* position);
+TType directiveSwitch(char* lexeme);
 
 #endif
