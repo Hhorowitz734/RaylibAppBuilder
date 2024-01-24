@@ -1,1 +1,4 @@
-<head></head>
+<head>
+SET WINDOWHEIGHT 800
+SET WINDOWWIDTH 500
+</head>
