@@ -14,7 +14,8 @@ typedef struct WindowSettings{
 typedef enum DirectiveType{
     
     WINDOWHEIGHT,
-    WINDOWWIDTH
+    WINDOWWIDTH,
+    WINDOWTITLE
 
 } DirectiveType;
 
@@ -27,7 +28,8 @@ WindowSettings* handleTokenStream(Token* head) {
     WindowSettings* settings = (WindowSettings*)malloc(sizeof(WindowSettings));
 
     if (head->type != HEAD_OPEN) {
-        printf("Token stream must begin with head token.");
+        printf("[Parser]: Token stream must begin with head token.\n");
+        return NULL;
     }
 
     head = head->next;
@@ -40,7 +42,7 @@ WindowSettings* handleTokenStream(Token* head) {
     }
 
     return settings; 
-    
+
 }
 
 void parseSetDirective(char* lexeme, WindowSettings* settings) {
@@ -55,10 +57,18 @@ void parseSetDirective(char* lexeme, WindowSettings* settings) {
 
     while (lexeme[position] != ' ' && lexeme[position] != '\0') { position++; }
 
+    DirectiveType directiveType = WINDOWHEIGHT; //CREATE A DEFAULT VALUE INSTEAD OF USING THIS
+
     if (strncmp(&lexeme[initial_position], "WINDOWHEIGHT", 12) == 0) {
-        setDirectiveSettings(&lexeme[initial_position], settings, WINDOWHEIGHT);
+        directiveType = WINDOWHEIGHT;
     } else if (strncmp(&lexeme[initial_position], "WINDOWWIDTH", 11) == 0) {
-        setDirectiveSettings(&lexeme[initial_position], settings, WINDOWWIDTH);
+        directiveType = WINDOWWIDTH;
+    } else if (strncmp(&lexeme[initial_position], "WINDOWTITLE", 11) == 0) {
+        directiveType = WINDOWTITLE;
+    }
+
+    if (directiveType != -1) {
+        setDirectiveSettings(&lexeme[initial_position], settings, directiveType);
     }
 
 }
@@ -71,14 +81,29 @@ void setDirectiveSettings(char* end_of_lexeme, WindowSettings* settings, Directi
     while (end_of_lexeme[position] != ' ') { position++; }
     position++;
 
-    if (dtype == WINDOWHEIGHT) {
-        settings->height = atoi(&end_of_lexeme[position]);
-        printf("[Parser]: Sucessfully set height to: %d\n", settings->height);
+    switch (dtype) {
+
+        case WINDOWHEIGHT:
+            settings->height = atoi(&end_of_lexeme[position]);
+            printf("[Parser]: Successfully set height to: %d\n", settings->height);
+            break;
+
+        case WINDOWWIDTH:
+            settings->width = atoi(&end_of_lexeme[position]);
+            printf("[Parser]: Successfully set width to: %d\n", settings->width);
+            break;
+
+        case WINDOWTITLE:
+            settings->title = &end_of_lexeme[position];
+            // BE CAREFUL WITH MEMORY DEALLOCATION ERROR HERE !!!!! VERY ERROR PRONE CODE
+            printf("[Parser]: Successfully set title to: %s\n", settings->title);
+            break;
+
+        default:
+            break;
     }
-    else if (dtype == WINDOWWIDTH) {
-        settings->width = atoi(&end_of_lexeme[position]);
-        printf("[Parser]: Sucessfully set width to: %d\n", settings->width);
-    }
+
+
 
 }
 
