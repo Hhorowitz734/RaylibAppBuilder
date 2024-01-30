@@ -115,9 +115,13 @@ const char* TTypeToString(TType type) {
 
 void printTokenTypes(Token* head) {
 
+    Token* temp = head;
+
     while (head != NULL) {
         printf("%s\n", TTypeToString(head->type));
         head = head->next;
     }
+
+    head = temp;
 
 }
