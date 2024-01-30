@@ -46,7 +46,7 @@ Token* parseFile(FILE* file) {
     return head;
 }
 
-
+// Potentially, we could combine processTag and processDirective into some general function by extracting the parts
 Token* processTag(char* input, int* position) {
     int initial_position = *position;
 
@@ -121,6 +121,8 @@ TType typeSwitch(char* lexeme) {
 
     if (strcmp(lexeme, "<head>") == 0) { return HEAD_OPEN; }
     if (strcmp(lexeme, "</head>") == 0) { return HEAD_CLOSE; }
+    if (strcmp(lexeme, "<body>") == 0) { return BODY_OPEN; }
+    if (strcmp(lexeme, "</body>") == 0) { return BODY_CLOSE; }
     else { return INVALID; }
 
 }

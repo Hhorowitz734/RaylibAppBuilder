@@ -9,6 +9,7 @@
 typedef enum TType {
 
     BODY_OPEN, //<body>
+    BODY_CLOSE, //</body>
     HEAD_OPEN, //<head>
     HEAD_CLOSE, //</head>
     SET, //SET
