@@ -9,7 +9,7 @@ WindowSettings* handleTokenStream(Token* head) {
         return NULL;
     }
 
-    head = head->next;
+    head = head->next; // Skips HEAD_OPEN
 
     while (head->type != HEAD_CLOSE) { //Configures raylib settings
 
@@ -20,8 +20,18 @@ WindowSettings* handleTokenStream(Token* head) {
 
     }
 
+    head = head->next; //Skips HEAD_CLOSE
+    
+    if (head->type != BODY_OPEN) {
+        printf("[Parser]: Unrecognized token %s between head and body.\n", TTypeToString(head->type));
+        return NULL;
+    }
+
+    head = head->next;
+
     while (head->type != BODY_CLOSE) {
-        //FILL THIS FUNCTION IN
+        
+        parseComponent(head);
         head = head->next;
     }
 
@@ -104,6 +114,8 @@ const char* TTypeToString(TType type) {
             return "HEAD_CLOSE";
         case SET:
             return "SET";
+        case BOX:
+            return "BOX";
         case END:
             return "END";
         case INVALID:
@@ -124,4 +136,14 @@ void printTokenTypes(Token* head) {
 
     head = temp;
 
+}
+
+void parseComponent(Token* token) {
+
+    if (token->type == BOX) {
+        createBox(token);
+    }
+    
+
+    
 }

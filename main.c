@@ -6,9 +6,17 @@ int main() {
     FILE* file = openFile("../test.txt");
     Token* head = parseFile(file);
 
+    printTokenTypes(head);
+
+
     WindowSettings* settings = handleTokenStream(head);
 
-    InitWindow(settings->width, settings->height, "Test");
+    if (settings == NULL) {
+        printf("[Main]: Invalid token stream.\n");
+        return 1;
+    }
+
+    InitWindow(settings->width, settings->height, settings->title);
 
     SetTargetFPS(60);
 
@@ -19,6 +27,7 @@ int main() {
     }
 
     CloseWindow();
+
 
     return 0;
 }

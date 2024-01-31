@@ -1,5 +1,7 @@
 #include "../include/lexer.h"
 
+#include <stdio.h>
+
 FILE* openFile(const char* filename) {
     FILE* file = fopen(filename, "r");
     if (file == NULL) { return NULL; }
@@ -21,13 +23,16 @@ Token* parseFile(FILE* file) {
         int position = 0;  
 
         while (buffer[position] != '\0') {
-            if (buffer[position] == '<') {
+            if (buffer[position] == '<' && buffer[position + 1] != 'B') { //MAKE A BETTER WAY TO DO THIS
                 curr = processTag(buffer, &position);
             }
             else if (buffer[position] == 'S') {
                 curr = processDirective(buffer, &position);
                 //position++;
-            } else {
+            } else if (buffer[position] == '<') {
+                curr = processComponent(buffer, &position);
+            }
+             else {
                 position++;
             }
             if (temp != NULL) { temp->next = curr; }
@@ -117,6 +122,42 @@ Token* processDirective(char* input, int* position) {
     return token;
 }
 
+Token* processComponent(char* input, int* position) {
+
+    int initial_position = *position;
+    while (input[*position] != '>' && input[*position] != '\n' && input[*position] != '\0') {
+        (*position)++;
+    }
+
+    if (input[*position] == '\0') {
+        return NULL;
+    }
+
+    int length = *position - initial_position + 1;
+    char* tagLexeme = malloc(length);  
+
+    if (tagLexeme == NULL) {
+        return NULL;  
+    }
+
+    strncpy(tagLexeme, 
+            input + initial_position, 
+            length + 1);
+    tagLexeme[length + 1] = '\0'; 
+
+    Token* token = (Token*)malloc(sizeof(Token));
+    if (token == NULL) {
+        free(tagLexeme); 
+        return NULL;    
+    }
+    token->lexeme = tagLexeme;
+    token->type = componentSwitch(tagLexeme);
+
+    (*position)++;
+    return token;
+
+}
+
 TType typeSwitch(char* lexeme) {
 
     if (strcmp(lexeme, "<head>") == 0) { return HEAD_OPEN; }
@@ -129,6 +170,11 @@ TType typeSwitch(char* lexeme) {
 
 TType directiveSwitch(char* lexeme) {
     if (strncmp(lexeme, "SET", 3) == 0) { return SET; }
+    else { return INVALID; }
+}
+
+TType componentSwitch(char* lexeme) {
+    if (strncmp(lexeme, "<BOX", 4) == 0) { return BOX; }
     else { return INVALID; }
 }
 

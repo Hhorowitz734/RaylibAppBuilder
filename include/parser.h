@@ -2,6 +2,7 @@
 #define PARSER_H
 
 #include "lexer.h"
+#include "components/box.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -18,6 +19,16 @@ typedef enum DirectiveType{
     WINDOWTITLE
 
 } DirectiveType;
+
+
+/**
+ * @brief Main parser function to be accessed by lexer after token stream creation
+ * 
+ * @param head Head token of token stream
+ * 
+ * @returns The WindowSettings of the raylib object
+*/
+WindowSettings* handleTokenStream(Token* head);
 
 /**
  * @brief Parses a SET directive to set raylib settings
@@ -37,7 +48,6 @@ void parseSetDirective(char* lexeme, WindowSettings* settings);
  * 
 */
 void setDirectiveSettings(char* end_of_lexeme, WindowSettings* settings, DirectiveType dtype);
-WindowSettings* handleTokenStream(Token* head);
 
 //Utility functions for testing
 
@@ -56,6 +66,8 @@ const char* TTypeToString(TType type);
  * @param head The head token. The function restores the pointer to the head when it is done
 */
 void printTokenTypes(Token* head);
+
+void parseComponent(Token* token);
 
 
 

@@ -8,12 +8,19 @@
 
 typedef enum TType {
 
+    // Section definition tokens
     BODY_OPEN, //<body>
     BODY_CLOSE, //</body>
     HEAD_OPEN, //<head>
     HEAD_CLOSE, //</head>
+
+    // Directive Tokens
     SET, //SET
 
+    // Component Tokens
+    BOX,
+
+    // Utility Type Tokens
     END, //End Token
     INVALID //Invalid Type
 
@@ -81,6 +88,8 @@ TType typeSwitch(char* lexeme);
 */
 Token* processDirective(char* input, int* position);
 
+Token* processComponent(char* input, int* position);
+
 /**
  * @brief Returns the token type of a directive Token given its lexeme
  * 
@@ -92,5 +101,7 @@ Token* processDirective(char* input, int* position);
  * @note Used as a utility function for processTag
 */
 TType directiveSwitch(char* lexeme);
+
+TType componentSwitch(char* lexeme);
 
 #endif
