@@ -4,30 +4,14 @@ WindowSettings* handleTokenStream(Token* head) {
 
     WindowSettings* settings = (WindowSettings*)malloc(sizeof(WindowSettings));
 
-    if (head->type != HEAD_OPEN) {
-        printf("[Parser]: Token stream must begin with head token.\n");
-        return NULL;
-    }
+    parseHead(&head, settings);
 
-    head = head->next; // Skips HEAD_OPEN
-
-    while (head->type != HEAD_CLOSE) { //Configures raylib settings
-
-        //Refactor this into a parseHead function
-
-        parseSetDirective(head->lexeme, settings);
-        head = head->next;
-
-    }
-
-    head = head->next; //Skips HEAD_CLOSE
-    
     if (head->type != BODY_OPEN) {
         printf("[Parser]: Unrecognized token %s between head and body.\n", TTypeToString(head->type));
         return NULL;
     }
 
-    head = head->next;
+    head = head->next; //Skips BODY_OPEN
 
     while (head->type != BODY_CLOSE) {
         
@@ -37,6 +21,24 @@ WindowSettings* handleTokenStream(Token* head) {
 
     return settings; 
 
+}
+
+void parseHead(Token** head, WindowSettings* settings) {
+
+    if ((*head)->type != HEAD_OPEN) {
+        printf("[Parser]: Token stream must begin with head token.\n");
+    }
+
+    *head = (*head)->next; // Skips HEAD_OPEN
+
+    while ((*head)->type != HEAD_CLOSE) { //Configures raylib settings
+
+        parseSetDirective((*head)->lexeme, settings);
+        *head = (*head)->next;
+
+    }
+
+    *head = (*head)->next; //Skips HEAD_CLOSE
 }
 
 void parseSetDirective(char* lexeme, WindowSettings* settings) {

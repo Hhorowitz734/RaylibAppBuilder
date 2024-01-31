@@ -31,6 +31,14 @@ typedef enum DirectiveType{
 WindowSettings* handleTokenStream(Token* head);
 
 /**
+ * @brief Parses all tokens in head section
+ * 
+ * @param head Pointer to pointer to head
+ * @param settings WindowSettings to be modified in place
+*/
+void parseHead(Token** head, WindowSettings* settings);
+
+/**
  * @brief Parses a SET directive to set raylib settings
  * 
  * @param lexeme The string lexeme of the set directive token
