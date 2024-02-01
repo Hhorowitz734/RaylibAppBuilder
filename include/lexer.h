@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../utils/include/log.h"
+
 
 typedef enum TType {
 

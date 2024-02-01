@@ -58,10 +58,14 @@ void switchSettings(Box* box, char* setting, int value) {
 
     if (strncmp(setting, "WIDTH", 5) == 0) { 
         box->width = value;
-        printf("[Box Parser]: Set box width to: %d\n", box->width); }
+        printf("[Box Parser]: Set box width to: %d\n", box->width); 
+        logMessage("[Box Parser]: Set box width to: %d", box->width);
+    }
+
     else if (strncmp(setting, " HEIGHT", 7) == 0 || strncmp(setting, "HEIGHT", 6) == 0) {
         box->height = value;
         printf("[Box Parser]: Set box height to: %d\n", box->height);
+        logMessage("[Box Parser]: Set box height to: %d", box->height);
     }
     else {
         printf("%s\n", setting);

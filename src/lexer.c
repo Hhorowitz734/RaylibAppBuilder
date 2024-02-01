@@ -11,6 +11,7 @@ FILE* openFile(const char* filename) {
 Token* parseFile(FILE* file) {
     if (file == NULL) { 
         printf("File is null.\n"); 
+        logMessage("[Lexer]: File is null.");
         return NULL;
     }
 

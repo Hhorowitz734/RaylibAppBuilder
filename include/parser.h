@@ -3,6 +3,7 @@
 
 #include "lexer.h"
 #include "components/box.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -28,6 +29,14 @@ typedef struct ComponentNode{
 
 } ComponentNode;
 
+typedef struct RunContainer{
+
+    WindowSettings* settings;
+
+    ComponentNode* head;
+
+} RunContainer;
+
 
 /**
  * @brief Main parser function to be accessed by lexer after token stream creation
@@ -36,7 +45,7 @@ typedef struct ComponentNode{
  * 
  * @returns The WindowSettings of the raylib object
 */
-WindowSettings* handleTokenStream(Token* head);
+RunContainer* handleTokenStream(Token* head);
 
 /**
  * @brief Parses all tokens in head section

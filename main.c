@@ -3,13 +3,15 @@
 #include "include/parser.h"
 
 int main() {
+
+    initLogfile();
+
     FILE* file = openFile("../test.txt");
     Token* head = parseFile(file);
 
     printTokenTypes(head);
 
-
-    WindowSettings* settings = handleTokenStream(head);
+    WindowSettings* settings = handleTokenStream(head)->settings;
 
     if (settings == NULL) {
         printf("[Main]: Invalid token stream.\n");
@@ -27,7 +29,6 @@ int main() {
     }
 
     CloseWindow();
-
 
     return 0;
 }

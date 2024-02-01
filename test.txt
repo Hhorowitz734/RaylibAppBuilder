@@ -1,8 +1,10 @@
 <head>
     SET WINDOWHEIGHT 800
-    SET WINDOWWIDTH 500
+    SET WINDOWWIDTH 800
     SET WINDOWTITLE Sample Title Here
 </head>
 <body>
-    <BOX WIDTH = 100 LENGTH = 100>
+    <BOX WIDTH = 100 | HEIGHT = 100>
+    <BOX WIDTH = 500>
+    <BOX HEIGHT = 300>
 </body>

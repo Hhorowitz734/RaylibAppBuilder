@@ -1,6 +1,6 @@
 #include "../include/parser.h"
 
-WindowSettings* handleTokenStream(Token* head) {
+RunContainer* handleTokenStream(Token* head) {
 
     WindowSettings* settings = (WindowSettings*)malloc(sizeof(WindowSettings));
     ComponentNode* headComponent = (ComponentNode*)malloc(sizeof(ComponentNode));
@@ -9,7 +9,11 @@ WindowSettings* handleTokenStream(Token* head) {
 
     parseBody(&head, headComponent);
 
-    return settings; 
+    RunContainer* container = (RunContainer*)malloc(sizeof(RunContainer));
+    container->head = headComponent;
+    container->settings = settings;
+
+    return container;
 
 }
 
@@ -17,11 +21,12 @@ void parseHead(Token** head, WindowSettings* settings) {
 
     if ((*head)->type != HEAD_OPEN) {
         printf("[Parser]: Token stream must begin with head token.\n");
+        logMessage("[Parser]: Token stream must begin with head token. See function parseHead.");
     }
 
     *head = (*head)->next; // Skips HEAD_OPEN
 
-    while ((*head)->type != HEAD_CLOSE) { //Configures raylib settings
+    while ((*head)->type != HEAD_CLOSE && (*head)->type != END && (*head)->next != NULL) { //Configures raylib settings
 
         parseSetDirective((*head)->lexeme, settings);
         *head = (*head)->next;
@@ -35,11 +40,12 @@ void parseBody(Token** head, ComponentNode* headCNode) {
 
     if ((*head)->type != BODY_OPEN) {
         printf("[Parser]: Unrecognized token %s between head and body.\n", TTypeToString((*head)->type));
+        logMessage("[Parser]: Unrecognized token %s between head and body.\n", TTypeToString((*head)->type));
     }
 
     *head = (*head)->next; //Skips BODY_OPEN
 
-    while ((*head)->type != BODY_CLOSE) {
+    while ((*head)->type != BODY_CLOSE && (*head)->type != END && (*head)->next != NULL) {
         
         parseComponent(*head, headCNode);
         *head = (*head)->next;
@@ -90,17 +96,20 @@ void setDirectiveSettings(char* end_of_lexeme, WindowSettings* settings, Directi
         case WINDOWHEIGHT:
             settings->height = atoi(&end_of_lexeme[position]);
             printf("[Parser]: Successfully set height to: %d\n", settings->height);
+            logMessage("[Parser]: Successfully set height to: %d", settings->height);
             break;
 
         case WINDOWWIDTH:
             settings->width = atoi(&end_of_lexeme[position]);
             printf("[Parser]: Successfully set width to: %d\n", settings->width);
+            logMessage("[Parser]: Successfully set width to: %d", settings->width);
             break;
 
         case WINDOWTITLE:
             settings->title = &end_of_lexeme[position];
             // BE CAREFUL WITH MEMORY DEALLOCATION ERROR HERE !!!!! VERY ERROR PRONE CODE
             printf("[Parser]: Successfully set title to: %s\n", settings->title);
+            logMessage("[Parser]: Successfully set title to: %s", settings->title);
             break;
 
         default:
@@ -139,14 +148,25 @@ void printTokenTypes(Token* head) {
 
     Token* temp = head;
 
-    while (head != NULL) {
+    logMessage("Parser recieved following types\n-------------------------------");
+
+    if (head != NULL) {
         printf("%s\n", TTypeToString(head->type));
-        head = head->next;
+        logMessage("%s", TTypeToString(head->type));
     }
+
+    while (head != NULL && head->type != END) {
+        head = head->next;
+        printf("%s\n", TTypeToString(head->type));
+        logMessage("%s", TTypeToString(head->type));
+    }
+
+    logMessage("Token stream ended.\n-------------------------------");
 
     head = temp;
 
 }
+
 
 void parseComponent(Token* token, ComponentNode* head) {
 
