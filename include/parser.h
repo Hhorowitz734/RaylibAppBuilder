@@ -20,6 +20,14 @@ typedef enum DirectiveType{
 
 } DirectiveType;
 
+typedef struct ComponentNode{
+
+    Box* box; //expand this to hold different stuff later
+    struct ComponentNode* left;
+    struct ComponentNode* right;
+
+} ComponentNode;
+
 
 /**
  * @brief Main parser function to be accessed by lexer after token stream creation
@@ -37,6 +45,8 @@ WindowSettings* handleTokenStream(Token* head);
  * @param settings WindowSettings to be modified in place
 */
 void parseHead(Token** head, WindowSettings* settings);
+
+void parseBody(Token** head, ComponentNode* headCNode);
 
 /**
  * @brief Parses a SET directive to set raylib settings
@@ -75,7 +85,7 @@ const char* TTypeToString(TType type);
 */
 void printTokenTypes(Token* head);
 
-void parseComponent(Token* token);
+void parseComponent(Token* token, ComponentNode* head);
 
 
 

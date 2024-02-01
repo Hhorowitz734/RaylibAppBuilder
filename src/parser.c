@@ -3,21 +3,11 @@
 WindowSettings* handleTokenStream(Token* head) {
 
     WindowSettings* settings = (WindowSettings*)malloc(sizeof(WindowSettings));
+    ComponentNode* headComponent = (ComponentNode*)malloc(sizeof(ComponentNode));
 
     parseHead(&head, settings);
 
-    if (head->type != BODY_OPEN) {
-        printf("[Parser]: Unrecognized token %s between head and body.\n", TTypeToString(head->type));
-        return NULL;
-    }
-
-    head = head->next; //Skips BODY_OPEN
-
-    while (head->type != BODY_CLOSE) {
-        
-        parseComponent(head);
-        head = head->next;
-    }
+    parseBody(&head, headComponent);
 
     return settings; 
 
@@ -40,6 +30,24 @@ void parseHead(Token** head, WindowSettings* settings) {
 
     *head = (*head)->next; //Skips HEAD_CLOSE
 }
+
+void parseBody(Token** head, ComponentNode* headCNode) {
+
+    if ((*head)->type != BODY_OPEN) {
+        printf("[Parser]: Unrecognized token %s between head and body.\n", TTypeToString((*head)->type));
+    }
+
+    *head = (*head)->next; //Skips BODY_OPEN
+
+    while ((*head)->type != BODY_CLOSE) {
+        
+        parseComponent(*head, headCNode);
+        *head = (*head)->next;
+    }
+
+
+}
+
 
 void parseSetDirective(char* lexeme, WindowSettings* settings) {
 
@@ -140,10 +148,23 @@ void printTokenTypes(Token* head) {
 
 }
 
-void parseComponent(Token* token) {
+void parseComponent(Token* token, ComponentNode* head) {
+
+    ComponentNode* temp = head;
 
     if (token->type == BOX) {
-        createBox(token);
+        
+        Box* box = createBox(token);
+
+        while (temp->left != NULL) { temp = temp->left; } //Add a tree structure addition later
+        
+        ComponentNode* newNode = (ComponentNode*)malloc(sizeof(ComponentNode));
+        newNode->box = box;
+        newNode->left = NULL;
+        newNode->right = NULL;
+
+        temp->left = newNode;   
+        
     }
     
 
