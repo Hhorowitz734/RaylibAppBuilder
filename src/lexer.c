@@ -32,13 +32,14 @@ Token* parseFile(FILE* file) {
             } else if (buffer[position] == '<') {
                 curr = processComponent(buffer, &position);
             }
-             else {
-                position++;
-            }
+            else if (buffer[position] == '\n') { position++; }
+            else { position++; }
+
             if (temp != NULL) { temp->next = curr; }
             else { head = curr; }
             temp = curr; 
-            if (buffer[position] == '\n') {position++;}
+            if (buffer[position] == '\n') { position++; }
+
         }
     }
 
