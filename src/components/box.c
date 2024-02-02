@@ -15,6 +15,8 @@ Box* createBox(Token* boxToken) {
 
 void setBoxSettings(Box* box, char* tokenLexeme) {
 
+    logMessage("\n-------------------------------\n[Box Parser]: Setting up box");
+
     int position = 0;
     int initial_position = 0;
 
@@ -52,11 +54,13 @@ void setBoxSettings(Box* box, char* tokenLexeme) {
         
     }
 
+    logMessage("\n-------------------------------");
+
 }
 
 void switchSettings(Box* box, char* setting, int value) {
 
-    if (strncmp(setting, "WIDTH", 5) == 0) { 
+    if (strncmp(setting, "WIDTH", 5) == 0 || strncmp(setting, " WIDTH", 6) == 0) { 
         box->width = value;
         printf("[Box Parser]: Set box width to: %d\n", box->width); 
         logMessage("[Box Parser]: Set box width to: %d", box->width);
@@ -67,8 +71,19 @@ void switchSettings(Box* box, char* setting, int value) {
         printf("[Box Parser]: Set box height to: %d\n", box->height);
         logMessage("[Box Parser]: Set box height to: %d", box->height);
     }
+    else if (strncmp(setting, " X", 2) == 0 || strncmp(setting, "X", 1) == 0) {
+        box->x = value;
+        printf("[Box Parser]: Set box x-position to: %d\n", box->x);
+        logMessage("[Box Parser]: Set box x-position to: %d", box->x);
+    }
+    else if (strncmp(setting, " Y", 2) == 0 || strncmp(setting, "Y", 1) == 0) {
+        box->y = value;
+        printf("[Box Parser]: Set box x-position to: %d\n", box->y);
+        logMessage("[Box Parser]: Set box x-position to: %d", box->y);
+    }
     else {
         printf("%s\n", setting);
+        logMessage("[Box Parser]: Attempted to set non-existant setting %s.", setting);
     }
 
 }
