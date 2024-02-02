@@ -1,6 +1,6 @@
-#include "raylib.h"
 #include "include/lexer.h"
 #include "include/parser.h"
+#include "include/display.h"
 
 int main() {
 
@@ -10,25 +10,11 @@ int main() {
     Token* head = parseFile(file);
 
     printTokenTypes(head);
+    RunContainer* container = handleTokenStream(head);
 
-    WindowSettings* settings = handleTokenStream(head)->settings;
+    displayContainer(container);
 
-    if (settings == NULL) {
-        printf("[Main]: Invalid token stream.\n");
-        return 1;
-    }
 
-    InitWindow(settings->width, settings->height, settings->title);
-
-    SetTargetFPS(60);
-
-    while (!WindowShouldClose()) {
-        BeginDrawing();
-        ClearBackground(BLACK);
-        EndDrawing();
-    }
-
-    CloseWindow();
 
     return 0;
 }
